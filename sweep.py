@@ -2,10 +2,10 @@ import itertools
 import numpy as np
 from cold_plate_model import compute
 
-WIDTHS = np.linspace(2, 40, 0.5)      # mm
-HEIGHTS = np.linspace(2, 100, 0.5)     # mm
-LENGTHS = np.linspace(100, 5000, 5)  # mm
-FLOWS = np.linspace(1, 20, 1)       # L/min
+WIDTHS = np.arange(2, 40 + 2, 2)        #mm
+HEIGHTS = np.arange(2, 102 + 5, 5)      #mm
+LENGTHS = np.arange(100, 5100 + 500, 500)   #mm
+FLOWS = np.arange(1, 20 + 1, 1)             #L/min
 
 def run_sweep(widths, heights, lengths, flows):
     results = []

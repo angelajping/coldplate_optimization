@@ -49,6 +49,6 @@ def compute(width_mm, height_mm, length_mm, flow_Lmin):
     }
 
 if __name__ == "__main__":
-    test = compute(width_mm=10, height_mm=10, length_mm=1332, flow_Lmin=10)
+    test = compute(width_mm=10, height_mm=10, length_mm=1332, flow_Lmin=20)
     print(test)
     # Sanity check against your spreadsheet: Re ~30138, f ~0.0261, Nu ~172.19, h_conv ~11089

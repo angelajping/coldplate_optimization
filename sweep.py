@@ -2,18 +2,17 @@ import itertools
 import numpy as np
 from cold_plate_model import compute
 
-WIDTHS = np.arange(2, 40 + 2, 2)        #mm
-HEIGHTS = np.arange(2, 102 + 5, 5)      #mm
-LENGTHS = np.arange(100, 5100 + 500, 500)   #mm
-FLOWS = np.arange(1, 20 + 1, 1)             #L/min
+WIDTHS = np.arange(2, 20 + 1, 1)        #mm
+HEIGHTS = np.arange(6, 12 + 2, 1)      #mm
+#LENGTHS = np.arange(100, 5100 + 500, 500)   #mm
+FLOWS = np.arange(1, 10 + 1, 1)             #L/min
 
-def run_sweep(widths, heights, lengths, flows):
+def run_sweep(widths, heights, flows):
     results = []
-    for w, h, L, flow in itertools.product(widths, heights, lengths, flows):
-        r = compute(width_mm=w, height_mm=h, length_mm=L, flow_Lmin=flow)
+    for w, h, flow in itertools.product(widths, heights, flows):
+        r = compute(width_mm=w, height_mm=h, flow_Lmin=flow)
         r["width"] = w
         r["height"] = h
-        r["length"] = L
         r["flow"] = flow
         results.append(r)
     return results
@@ -34,14 +33,13 @@ def find_pareto_front(results):
             pareto.append(point)
     return pareto
 
-def best_under_constraint(pareto_points, max_dP_kPa):
+def best_designs_under_constraint(pareto_points, max_dP_kPa, n=5):
     feasible = [p for p in pareto_points if p["dP_kPa"] <= max_dP_kPa]
-    if not feasible:
-        return None
-    return max(feasible, key=lambda p: p["h_conv"])
+    ranked = sorted(feasible, key=lambda p: p["h_conv"], reverse=True)
+    return ranked[:n]
 
 if __name__ == "__main__":
-    all_results = run_sweep(WIDTHS, HEIGHTS, LENGTHS, FLOWS)
+    all_results = run_sweep(WIDTHS, HEIGHTS, FLOWS)
     valid = filter_valid(all_results)
     pareto = find_pareto_front(valid)
 
@@ -49,5 +47,5 @@ if __name__ == "__main__":
     print(f"Valid (Re >= 3000): {len(valid)}")
     print(f"Pareto-optimal points: {len(pareto)}")
 
-    best = best_under_constraint(pareto, max_dP_kPa=50)  # placeholder, use your real pump budget
-    print("Best design under constraint:", best)
+    best = best_designs_under_constraint(pareto, max_dP_kPa=50, n=5)  # placeholder, use your real pump budget
+    print("Best designs under constraint:", best)
